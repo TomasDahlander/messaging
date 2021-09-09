@@ -16,8 +16,8 @@ public class AuditEntry {
     }
 
     public enum AuditType {
-        Open,
-        Deposit
+        OPEN_ACCOUNT,
+        DEPOSIT
     }
 
     public AuditType getType() {

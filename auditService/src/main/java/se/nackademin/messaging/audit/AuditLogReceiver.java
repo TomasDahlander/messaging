@@ -1,10 +1,15 @@
 package se.nackademin.messaging.audit;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.io.DataInput;
+import java.io.IOException;
+import java.time.Instant;
 
 @Component
 public class AuditLogReceiver {
@@ -13,8 +18,16 @@ public class AuditLogReceiver {
     @Autowired
     AuditLogRepository auditLogRepository;
 
-    public void receiveMessage(AuditEvent event) {
+    @RabbitListener(queues = "audit-log")
+    public void receiveMessage(AuditEvent event) throws IOException {
         LOG.info("Received message! {}", event);
+        auditLogRepository.add
+                (new AuditEntry(AuditEntry.AuditType.valueOf(event.getType()),
+                        event.getAccountId(),
+                        Instant.parse(event.getTimestamp()),
+                        event.getData()));
+
+
         /* TODO: Uppgift 2: Spara eventet!
             För att lyssna på events räcker det med @RabbitListner! Annotera denna metod med:
              @RabbitListener(queues = "audit-log") så kommer den automagiskt att ropas på
