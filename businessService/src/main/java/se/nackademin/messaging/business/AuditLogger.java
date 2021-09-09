@@ -28,5 +28,6 @@ public class AuditLogger {
           En annan sak vi måste tillhandahålla är Routing key, vilket vi kan använda för att routa till rätt kö.
           I och med att vi använder FanoutExchange kommer den inte att användas dock.
         */
+        template.convertAndSend("exchange","",auditEvent);
     }
 }

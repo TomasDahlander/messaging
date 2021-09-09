@@ -23,8 +23,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.amqp.core.Binding.DestinationType.QUEUE;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -58,15 +58,22 @@ class DemoApplicationTests {
         // TODO: uppfift 2.a
         // Dags att konfa vår miljö, vi har skapat en exchange men vi behöver en queue så vi kan testa mot
         // Skapa en queue och en binding till den exchange vi skapade uppgift 1
-        // Rabbit har ett verktyg som heter RabbitAdmin med bra hjälpmetoder
-        // Tex. rabbitAdmin.declareQueue och rabbitAdmin.declareBinding
+        rabbitAdmin.declareQueue(new Queue("queue"));
 
+        // Rabbit har ett verktyg som heter RabbitAdmin med bra hjälpmetoder
+        rabbitAdmin.declareBinding(new Binding("queue", QUEUE,"exchange","",null));
+
+        // Tex. rabbitAdmin.declareQueue och rabbitAdmin.declareBinding
     }
 
     @Test
     void shouldSendCreatedOnPaymentCreated() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/openAccount/1234")).andExpect(status().is2xxSuccessful());
+
+        Message message = rabbitTemplate.receive("queue",3000);
+        assertNotNull(message);
+        assertTrue(new String(message.getBody()).contains("OPEN_ACCOUNT"));
         /*
 		TODO: Uppgift 2.b:
             Consume message från din kö du skapade i before.
@@ -83,7 +90,6 @@ class DemoApplicationTests {
 
             Leta efter uppgift 3.
 		 */
-
     }
 
     public static class Lab1ApplicationTestsContextInitializer
