@@ -31,7 +31,7 @@ public class ApplicationConfiguration {
     // Detta för att testfallet ska fungera
     @Bean
     public FanoutExchange fanoutExchange() {
-        return new FanoutExchange("business-events");
+        return new FanoutExchange("exchange");
     }
 
     @Bean
@@ -41,7 +41,7 @@ public class ApplicationConfiguration {
 
     @Bean
     public Binding declareBindingGeneric() {
-        return new Binding("audit-log", Binding.DestinationType.QUEUE,"business-events","",null);
+        return new Binding("audit-log", Binding.DestinationType.QUEUE,"exchange","",null);
     }
 
     @Bean
