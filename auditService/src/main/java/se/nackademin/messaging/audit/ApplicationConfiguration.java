@@ -19,16 +19,16 @@ public class ApplicationConfiguration {
     TODO: Uppgift 1: Configuration
      På consumer sidan behöver vi skapa upp en kö och binda den till rätt exchange.
      Namnet på kön ska vara "audit-log"
-
      Vi behöver öven konfigurera vår rabbitTemplate med rätt conection factory och message converter.
      Precis så som vi gjorde i andra tjänsten.
-
      */
+
     @Bean
     public AuditLogRepository auditLogRepository() {
         return new AuditLogRepository();
     }
 
+    // Detta för att testfallet ska fungera
     @Bean
     public FanoutExchange fanoutExchange() {
         return new FanoutExchange("business-events");
