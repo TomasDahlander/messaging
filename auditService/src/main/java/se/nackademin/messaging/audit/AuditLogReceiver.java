@@ -16,6 +16,17 @@ public class AuditLogReceiver {
     @Autowired
     AuditLogRepository auditLogRepository;
 
+    @RabbitListener(queues = "audit-log-withdraw")
+    public void receiveMessageWithdrawAccount(AuditEvent event) throws IOException {
+        System.out.println("Withdraw event: "+ event.getType());
+        LOG.info("Received withdraw message! {}", event);
+        auditLogRepository.add
+                (new AuditEntry(AuditEntry.AuditType.valueOf(event.getType()),
+                        event.getAccountId(),
+                        Instant.parse(event.getTimestamp()),
+                        event.getData()));
+    }
+
     @RabbitListener(queues = "audit-log-deposit")
     public void receiveMessageDepositAccount(AuditEvent event) throws IOException {
         System.out.println("Deposit event: "+ event.getType());

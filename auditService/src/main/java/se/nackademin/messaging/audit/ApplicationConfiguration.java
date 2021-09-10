@@ -37,6 +37,10 @@ public class ApplicationConfiguration {
     @Bean FanoutExchange fanoutExchange2(){
         return new FanoutExchange("account-deposit");
     }
+    // Detta för att testfallet ska fungera
+    @Bean FanoutExchange fanoutExchange3(){
+        return new FanoutExchange("account-withdraw");
+    }
 
     @Bean
     public Queue myQueue() {
@@ -49,6 +53,11 @@ public class ApplicationConfiguration {
     }
 
     @Bean
+    public Queue myQueue3() {
+        return new Queue("audit-log-withdraw");
+    }
+
+    @Bean
     public Binding declareBindingGeneric() {
         return new Binding("audit-log-open", Binding.DestinationType.QUEUE,"account-opened","",null);
     }
@@ -56,6 +65,11 @@ public class ApplicationConfiguration {
     @Bean
     public Binding declareBindingGeneric2() {
         return new Binding("audit-log-deposit", Binding.DestinationType.QUEUE,"account-deposit","",null);
+    }
+
+    @Bean
+    public Binding declareBindingGeneric3() {
+        return new Binding("audit-log-withdraw", Binding.DestinationType.QUEUE,"account-withdraw","",null);
     }
 
     @Bean

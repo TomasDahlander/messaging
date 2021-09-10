@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   audit:
-    image: audit:0.0.1
+    image: audit:0.0.2
     environment:
       - SPRING_RABBITMQ_HOST=rabbit
       - SPRING_RABBITMQ_PORT=5672
@@ -10,7 +10,7 @@ services:
     depends_on:
       - rabbit
   business:
-    image: business:0.0.1
+    image: business:0.0.2
     environment:
       - SPRING_RABBITMQ_HOST=rabbit
       - SPRING_RABBITMQ_PORT=5672

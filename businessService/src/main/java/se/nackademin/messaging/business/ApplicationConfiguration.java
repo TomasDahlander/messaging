@@ -56,6 +56,11 @@ public class ApplicationConfiguration {
     }
 
     @Bean
+    public FanoutExchange exchange3() {
+        return new FanoutExchange("account-withdraw");
+    }
+
+    @Bean
     public RabbitTemplate rabbitTemplate(final ConnectionFactory connectionFactory, final Jackson2JsonMessageConverter converter) {
        RabbitTemplate rt = new RabbitTemplate(connectionFactory);
        rt.setMessageConverter(converter);

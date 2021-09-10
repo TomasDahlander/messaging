@@ -8,6 +8,7 @@ public abstract class Event {
 
     enum AuditEventType {
         DEPOSIT,
+        WITHDRAW,
         OPEN_ACCOUNT
     }
 

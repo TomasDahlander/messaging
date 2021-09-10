@@ -18,14 +18,17 @@ public class AuditLogger {
 //        template.convertAndSend("exchange","",auditEvent);
 
         if(auditEvent instanceof DepositEvent){
-            System.out.println("Skickat deposit event");
+            System.out.println("Skickat deposit event...");
             template.convertAndSend("account-deposit","",auditEvent);
         }
         else if(auditEvent instanceof OpenAccountEvent){
-            System.out.println("Skickat opened event");
+            System.out.println("Skickat opened event...");
             template.convertAndSend("account-opened","",auditEvent);
         }
-
+        else if(auditEvent instanceof WithdrawEvent){
+            System.out.println("Skickat withdraw event...");
+            template.convertAndSend("account-withdraw","",auditEvent);
+        }
 
        /*
        TODO: Uppgift 3:

@@ -63,6 +63,7 @@ class DemoApplicationTests {
         // Rabbit har ett verktyg som heter RabbitAdmin med bra hjälpmetoder
         rabbitAdmin.declareBinding(new Binding("queue", QUEUE,"account-deposit","",null));
         rabbitAdmin.declareBinding(new Binding("queue", QUEUE,"account-opened","",null));
+        rabbitAdmin.declareBinding(new Binding("queue", QUEUE,"account-withdraw","",null));
         // Tex. rabbitAdmin.declareQueue och rabbitAdmin.declareBinding
     }
 
@@ -73,6 +74,15 @@ class DemoApplicationTests {
         Message message = rabbitTemplate.receive("queue",3000);
         assertNotNull(message);
         assertTrue(new String(message.getBody()).contains("DEPOSIT"));
+    }
+
+    @Test
+    void shouldSendWithdrawEvent() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/withdraw/1234?amount=100")).andExpect(status().is2xxSuccessful());
+
+        Message message = rabbitTemplate.receive("queue",3000);
+        assertNotNull(message);
+        assertTrue(new String(message.getBody()).contains("WITHDRAW"));
     }
 
     @Test

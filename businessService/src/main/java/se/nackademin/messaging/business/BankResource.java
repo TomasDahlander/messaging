@@ -25,4 +25,10 @@ public class BankResource {
         auditLogger.notify(DepositEvent.build(Long.parseLong(accountId), Long.parseLong(amount)));
         return ResponseEntity.accepted().build();
     }
+
+    @PostMapping("/withdraw/{accountId}")
+    public ResponseEntity<String> withdraw(@PathVariable("accountId") String accountId, @RequestParam("amount") String amount) {
+        auditLogger.notify(WithdrawEvent.build(Long.parseLong(accountId), Long.parseLong(amount)));
+        return ResponseEntity.accepted().build();
+    }
 }

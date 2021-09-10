@@ -52,10 +52,6 @@ class AuditApplicationTest {
     @BeforeEach
     void setUp() {
         rabbitAdmin = new RabbitAdmin(connectionFactory);
-        rabbitAdmin.declareExchange(new FanoutExchange("business-events"));
-//        rabbitTemplate.receive("audit-log-open",3000);
-//        rabbitTemplate.receive("audit-log-deposit",3000);
-
     }
 
     @Test
@@ -65,6 +61,7 @@ class AuditApplicationTest {
 
     @Test
     public void canPopulateAuditLog() throws Exception {
+        rabbitAdmin.declareExchange(new FanoutExchange("account-opened"));
         final long accountId = 1L;
         final String data = "open account";
 
@@ -82,6 +79,7 @@ class AuditApplicationTest {
 
     @Test
     public void canReadDeposit() throws Exception {
+        rabbitAdmin.declareExchange(new FanoutExchange("account-deposit"));
         final long accountId = 1L;
         final String data = "deposit";
 
@@ -94,6 +92,24 @@ class AuditApplicationTest {
             final List<AuditEntry> logs = (List<AuditEntry>) mvcResult.getModelAndView().getModel().get("logs");
             int indexToCheck = logs.size() - 1;
             assertEquals(logs.get(indexToCheck).getData(),"deposit");
+        });
+    }
+
+    @Test
+    public void canReadWithdraw() throws Exception {
+        rabbitAdmin.declareExchange(new FanoutExchange("account-withdraw"));
+        final long accountId = 1L;
+        final String data = "withdraw";
+
+        rabbitTemplate.convertAndSend("account-withdraw", "" + accountId, new AuditEvent(accountId, data, "WITHDRAW", Instant.now().toString()));
+
+        Awaitility.await().atMost(Duration.FIVE_SECONDS).untilAsserted(() -> {
+            final MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/audit"))
+                    .andExpect(status().isOk())
+                    .andReturn();
+            final List<AuditEntry> logs = (List<AuditEntry>) mvcResult.getModelAndView().getModel().get("logs");
+            int indexToCheck = logs.size() - 1;
+            assertEquals(logs.get(indexToCheck).getData(),"withdraw");
         });
     }
 
