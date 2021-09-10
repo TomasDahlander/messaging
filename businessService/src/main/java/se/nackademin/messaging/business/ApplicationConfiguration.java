@@ -46,7 +46,7 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    FanoutExchange exchange() {
+    public FanoutExchange exchange() {
         return new FanoutExchange("exchange");
     }
 

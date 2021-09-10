@@ -17,7 +17,7 @@ public class AuditLogReceiver {
     @Autowired
     AuditLogRepository auditLogRepository;
 
-    @RabbitListener(queues = "audit-log")
+    @RabbitListener(queues = "audit-log-open")
     public void receiveMessage(AuditEvent event) throws IOException {
         LOG.info("Received message! {}", event);
         auditLogRepository.add

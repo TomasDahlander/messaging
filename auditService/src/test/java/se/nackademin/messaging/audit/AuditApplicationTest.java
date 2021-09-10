@@ -66,7 +66,7 @@ class AuditApplicationTest {
         final String data = "dsa";
 
 
-        rabbitTemplate.convertAndSend("exchange", "" + accountId, new AuditEvent(accountId, data, "OPEN_ACCOUNT", Instant.now().toString()));
+        rabbitTemplate.convertAndSend("account-opened", "" + accountId, new AuditEvent(accountId, data, "OPEN_ACCOUNT", Instant.now().toString()));
 
         Awaitility.await().atMost(Duration.FIVE_SECONDS).untilAsserted(() -> {
             final MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/audit"))

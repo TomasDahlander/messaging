@@ -31,17 +31,31 @@ public class ApplicationConfiguration {
     // Detta för att testfallet ska fungera
     @Bean
     public FanoutExchange fanoutExchange() {
-        return new FanoutExchange("exchange");
+        return new FanoutExchange("account-opened");
+    }
+
+    @Bean FanoutExchange fanoutExchange2(){
+        return new FanoutExchange("account-deposit");
     }
 
     @Bean
     public Queue myQueue() {
-        return new Queue("audit-log");
+        return new Queue("audit-log-open");
+    }
+
+    @Bean
+    public Queue myQueue2() {
+        return new Queue("audit-log-deposit");
     }
 
     @Bean
     public Binding declareBindingGeneric() {
-        return new Binding("audit-log", Binding.DestinationType.QUEUE,"exchange","",null);
+        return new Binding("audit-log-open", Binding.DestinationType.QUEUE,"account-opened","",null);
+    }
+
+    @Bean
+    public Binding declareBindingGeneric2() {
+        return new Binding("audit-log-deposit", Binding.DestinationType.QUEUE,"account-deposit","",null);
     }
 
     @Bean
