@@ -47,7 +47,12 @@ public class ApplicationConfiguration {
 
     @Bean
     public FanoutExchange exchange() {
-        return new FanoutExchange("exchange");
+        return new FanoutExchange("account-opened");
+    }
+
+    @Bean
+    public FanoutExchange exchange2() {
+        return new FanoutExchange("account-deposit");
     }
 
     @Bean

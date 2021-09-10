@@ -61,14 +61,22 @@ class DemoApplicationTests {
         rabbitAdmin.declareQueue(new Queue("queue"));
 
         // Rabbit har ett verktyg som heter RabbitAdmin med bra hjälpmetoder
-        rabbitAdmin.declareBinding(new Binding("queue", QUEUE,"exchange","",null));
-
+        rabbitAdmin.declareBinding(new Binding("queue", QUEUE,"account-deposit","",null));
+        rabbitAdmin.declareBinding(new Binding("queue", QUEUE,"account-opened","",null));
         // Tex. rabbitAdmin.declareQueue och rabbitAdmin.declareBinding
     }
 
     @Test
-    void shouldSendCreatedOnPaymentCreated() throws Exception {
+    void shouldSendDepositEvent() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/deposit/1234?amount=100")).andExpect(status().is2xxSuccessful());
 
+        Message message = rabbitTemplate.receive("queue",3000);
+        assertNotNull(message);
+        assertTrue(new String(message.getBody()).contains("DEPOSIT"));
+    }
+
+    @Test
+    void shouldSendCreatedOnPaymentCreated() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/openAccount/1234")).andExpect(status().is2xxSuccessful());
 
         Message message = rabbitTemplate.receive("queue",3000);

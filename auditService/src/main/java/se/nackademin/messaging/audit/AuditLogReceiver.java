@@ -1,6 +1,5 @@
 package se.nackademin.messaging.audit;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
+;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -17,9 +16,21 @@ public class AuditLogReceiver {
     @Autowired
     AuditLogRepository auditLogRepository;
 
+    @RabbitListener(queues = "audit-log-deposit")
+    public void receiveMessageDepositAccount(AuditEvent event) throws IOException {
+        System.out.println("Deposit event: "+ event.getType());
+        LOG.info("Received deposit message! {}", event);
+        auditLogRepository.add
+                (new AuditEntry(AuditEntry.AuditType.valueOf(event.getType()),
+                        event.getAccountId(),
+                        Instant.parse(event.getTimestamp()),
+                        event.getData()));
+    }
+
     @RabbitListener(queues = "audit-log-open")
-    public void receiveMessage(AuditEvent event) throws IOException {
-        LOG.info("Received message! {}", event);
+    public void receiveMessageOpenAccount(AuditEvent event) throws IOException {
+        System.out.println("Open account event: "+ event.getType());
+        LOG.info("Received open account message! {}", event);
         auditLogRepository.add
                 (new AuditEntry(AuditEntry.AuditType.valueOf(event.getType()),
                         event.getAccountId(),

@@ -33,7 +33,7 @@ public class ApplicationConfiguration {
     public FanoutExchange fanoutExchange() {
         return new FanoutExchange("account-opened");
     }
-
+    // Detta för att testfallet ska fungera
     @Bean FanoutExchange fanoutExchange2(){
         return new FanoutExchange("account-deposit");
     }

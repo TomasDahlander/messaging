@@ -53,6 +53,9 @@ class AuditApplicationTest {
     void setUp() {
         rabbitAdmin = new RabbitAdmin(connectionFactory);
         rabbitAdmin.declareExchange(new FanoutExchange("business-events"));
+//        rabbitTemplate.receive("audit-log-open",3000);
+//        rabbitTemplate.receive("audit-log-deposit",3000);
+
     }
 
     @Test
@@ -63,8 +66,7 @@ class AuditApplicationTest {
     @Test
     public void canPopulateAuditLog() throws Exception {
         final long accountId = 1L;
-        final String data = "dsa";
-
+        final String data = "open account";
 
         rabbitTemplate.convertAndSend("account-opened", "" + accountId, new AuditEvent(accountId, data, "OPEN_ACCOUNT", Instant.now().toString()));
 
@@ -73,7 +75,25 @@ class AuditApplicationTest {
                     .andExpect(status().isOk())
                     .andReturn();
             final List<AuditEntry> logs = (List<AuditEntry>) mvcResult.getModelAndView().getModel().get("logs");
-            assertEquals(1, logs.size());
+            int indexToCheck = logs.size() - 1;
+            assertEquals(logs.get(indexToCheck).getData(),"open account");
+        });
+    }
+
+    @Test
+    public void canReadDeposit() throws Exception {
+        final long accountId = 1L;
+        final String data = "deposit";
+
+        rabbitTemplate.convertAndSend("account-deposit", "" + accountId, new AuditEvent(accountId, data, "DEPOSIT", Instant.now().toString()));
+
+        Awaitility.await().atMost(Duration.FIVE_SECONDS).untilAsserted(() -> {
+            final MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/audit"))
+                    .andExpect(status().isOk())
+                    .andReturn();
+            final List<AuditEntry> logs = (List<AuditEntry>) mvcResult.getModelAndView().getModel().get("logs");
+            int indexToCheck = logs.size() - 1;
+            assertEquals(logs.get(indexToCheck).getData(),"deposit");
         });
     }
 

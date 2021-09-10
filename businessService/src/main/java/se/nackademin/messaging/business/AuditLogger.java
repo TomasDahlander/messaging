@@ -14,6 +14,19 @@ public class AuditLogger {
 
     public void notify(Event auditEvent) {
         LOG.info("Sending..");
+
+//        template.convertAndSend("exchange","",auditEvent);
+
+        if(auditEvent instanceof DepositEvent){
+            System.out.println("Skickat deposit event");
+            template.convertAndSend("account-deposit","",auditEvent);
+        }
+        else if(auditEvent instanceof OpenAccountEvent){
+            System.out.println("Skickat opened event");
+            template.convertAndSend("account-opened","",auditEvent);
+        }
+
+
        /*
        TODO: Uppgift 3:
           Vi är inne i audit loggern. Här är det menat att vi ska skicka iväg ett meddelande!
@@ -28,6 +41,5 @@ public class AuditLogger {
           En annan sak vi måste tillhandahålla är Routing key, vilket vi kan använda för att routa till rätt kö.
           I och med att vi använder FanoutExchange kommer den inte att användas dock.
         */
-        template.convertAndSend("exchange","",auditEvent);
     }
 }
