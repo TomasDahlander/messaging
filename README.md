@@ -40,5 +40,8 @@ Det går bra att återanvända den i denna labb om man så vill men det ska gå 
 audit log över alla händelser på alla accounts. Denna är enbart synlig för Admins förståss!
 
 ### Val nummer 2
-Fortsätt i detta projekt och sätt upp två exchanges och två queues. En för AccountOpened och en för AccountDeposited. Se till att det finns två listeners i AuditService och att befintlig funktionalitet fortfarande leker!
+Fortsätt i detta projekt och sätt upp två exchanges och två queues. En för AccountOpened och en för AccountDeposited. 
+Se till att det finns två listeners i AuditService och att befintlig funktionalitet fortfarande leker! 
+Implementera Withdrawlals. 
+Ny endpoint Skicka meddelande på kö.
 
